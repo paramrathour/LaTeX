@@ -1,0 +1,897 @@
+\documentclass[12pt, letterpaper]{article}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage[parfill]{parskip}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{floatrow}
+\usepackage{url}
+\usepackage{graphicx}
+\usepackage{multirow}
+\usepackage{multicol}
+\usepackage{float}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}{Proposition}[section]
+
+\theoremstyle{remark}
+\newtheorem*{remark}{Remark}
+
+\lstnewenvironment{TeXlstlisting}{\lstset{language=[LaTeX]TeX}}{}
+
+\lstset{
+    frameround=fttt,
+    language=[LaTeX]TeX,
+    numbers=left,
+    breaklines=true,
+    delim        = [s][\color{red!50!black}]{$}{$},
+    moredelim=[s][\color{red!50!black}]{\\[}{\\]},
+    moredelim=[s][\color{red!50!black}]{$$}{$$},
+    keywordstyle=\color{blue}\bfseries, 
+    %basicstyle=\ttfamily\color{red},
+    numberstyle=\tiny\color{gray},
+    commentstyle=\color{green!30!black},
+    stringstyle = \color{violet}
+    }
+    
+\renewenvironment{boxed}
+    {\begin{center}
+    \begin{tabular}{|p{0.9\textwidth}|}
+    \hline\\
+    }
+    { 
+    \\\\\hline
+    \end{tabular} 
+    \end{center}
+    }
+    
+\newcounter{claim}
+%if you want this counter to reset every section, 
+%append [section] as an optional argument:
+%\newcounter{claim}[section]
+
+%\newenvironment{<name of environment>}[<number of arguments>]
+%{<code at the beginning>}
+%{<ending code>}
+
+%Of course, you can define unordered environments!
+\newenvironment{goodclaim}[2][black]
+{
+    \color{#1!50!black}
+    \refstepcounter{claim}
+    %this increments and then captures the value of the counter
+    
+    \begin{center}
+        \textbf{\large{Claim \theclaim}} \\
+        %this prints the value of the counter
+        \textbf{#2}
+    \end{center}
+}
+{
+    \vspace{1.5em}
+}
+%For ordered environments like these, which are equipped with a counter, you can make labels and refer to them later, just like theorems.
+
+
+ \newcommand{\innerproduct}[2]{\langle \boldsymbol{ #1 } , \boldsymbol{ #2 } \rangle}
+
+\begin{document}
+
+\title{\vspace{-2em}Typesetting Technical Reports}
+\author{Rwitaban Goswami and Mihir Vahanwala}
+\maketitle
+
+\tableofcontents
+
+\newpage
+\section{Introduction}
+You now know basic \LaTeX{}, but what about all the fancy maths and equations stuff which is what \LaTeX{} is pretty much known for the most outside the typesetting world? This week we bring to you the tools which will help you typeset technical reports, which includes, but is not limited to typesetting mathematics
+
+\section{Packages to load in the preamble}
+For the majority of purposes, when you need to typeset technical reports involving maths, your preamble will look something like this
+\begin{lstlisting}
+\documentclass[12pt, letterpaper]{article}
+\usepackage{amsmath} %see
+\usepackage{amsthm}  %explanation
+\usepackage{amssymb} %below
+
+\usepackage{esint} %more integration symbols
+
+\usepackage{graphicx} %for figures
+\usepackage{float} %for formatting figures and tables
+\usepackage{floatrow} %for formatting figures and tables
+\usepackage{listings} %to highlight code
+\usepackage{hyperref} %for referencing
+\usepackage{url}
+
+%We will explain this later
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}{Proposition}[section]
+
+\theoremstyle{remark}
+\newtheorem*{remark}{Remark}
+\end{lstlisting}
+
+The amsmath package makes typesetting formulae and equations much more convenient. The amsthm package makes it a lot easier to define theorem-like environments, which are crucial to write any mathematical text. Finally, amssymb, as the name suggests, incorporates a few cool mathematical symbols into our arsenal. \href{https://tex.stackexchange.com/questions/32100/what-does-each-ams-package-do}{This TeX StackExchange thread} gives a helpful technical summary. \cite{ams-packages} 
+
+It's important to note that amsthm must be loaded \emph{after} amsmath. Although we will deal with the package briefly, we strongly recommend reading the \href{http://www.ams.org/arc/tex/amscls/amsthdoc.pdf}{documentation}\cite{amsthm-doc} for quick pointers. 
+
+Alright, we're good to go!
+
+\newpage
+
+\section{Equations and formulae}
+\subsection{Math mode}
+Whenever you need to typeset mathematics and equations, you will need to be in a special mode that \LaTeX{} calls maths mode. There are two types of math modes:
+\begin{description}
+    \item[Inline maths] The typesetted maths sits inline, and is a part of a line which in general is not typesetted in math environment, generally used for simple statements such as $a=b$ to be embedded inside a line
+    \item[Math environment] The typesetted maths sits in its own space, generally used for large or important equations or a number of equations
+    \begin{equation*}
+        \vec{E} = \frac{1}{4\pi\epsilon_0}\frac{q\,(\vec{r}-\vec{r}_0)}{|\vec{r}-\vec{r}_0|^3}
+    \end{equation*}
+\end{description}
+
+Generally you would not write text in math mode, as it will be rendered $like this$, and no spaces are rendered in math mode
+\subsection{Inline Maths}
+If you'd like mathematical symbols in the midst of your text, place them between two \$ signs. For example,
+\begin{lstlisting}
+If a function $f$ is continuous, then for every $\varepsilon > 0$, there is a $\delta$, such that $||\mathbf{x}-\mathbf{x_0}|| < \delta$ implies $|f(\mathbf{x}) - f(\mathbf{x_0})| < \varepsilon$
+\end{lstlisting}
+typesets 
+\begin{boxed}
+If a function $f$ is continuous, then for every $\varepsilon > 0$, there is a $\delta > 0$, such that $||\mathbf{x}-\mathbf{x_0}|| < \delta$ implies $|f(\mathbf{x}) - f(\mathbf{x_0})| < \varepsilon$.
+\end{boxed}
+
+Alternate delimiters for inline maths include:
+\begin{lstlisting}
+This is the \[ \varepsilon-\delta\] definition. \\
+This is the $$\epsilon-\delta$$ defintion.
+\end{lstlisting}
+This typesets:
+\begin{boxed}
+This is the \[\varepsilon-\delta\] definition. \\
+This is the $$\epsilon-\delta$$ defintion.
+\end{boxed}
+
+Note the difference between \verb!\varepsilon! and \verb!\epsilon!. 
+
+From one simple line, we have observed how to typeset the \href{https://web.mit.edu/jmorzins/www/greek-alphabet.html}{Greek alphabet} \cite{greek}: here's an example, it works for all letters.
+\begin{lstlisting}
+$\Theta$ for upper case, $\theta$ for lowercase.
+\end{lstlisting}
+typesets 
+\begin{boxed}
+$\Theta$ for upper case, $\theta$ for lowercase.
+\end{boxed}
+
+We have observed how to typeset bold symbols with \verb!\mathbf!. However, for Greek letters, \verb!\mathbf{omega}! doesn't typeset $\boldsymbol{\omega}$, you have to use \verb!\boldsymbol{\omega}!
+
+We have also observed how to typeset subscripts. However, be careful when a subscript or superscript has multiple characters! An example:
+\begin{lstlisting}
+We have thus proven that $p_{ij}^{\alpha+\beta}$ is algebraic. Now consider arbitrary $t \in \mathbb{R}$...
+\end{lstlisting}
+typesets: 
+\begin{boxed}
+We have thus proven that $p_{ij}^{\alpha+\beta} \in \mathbb{C}$ is algebraic. Now consider arbitrary $t \in \mathbb{R}$...
+\end{boxed}
+Woah! Did you notice that? We just saw how to typeset a few more fancy symbols!
+
+When you write the representation of sets, make sure you escape the special meaning of the curly braces with a backslash.
+
+\begin{lstlisting}
+$S := \{ x | ~x \equiv 1 \pmod {9} \}$. $T := \{x | ~x \equiv 1 \pmod {3}\}$. $S \subset T$.
+\end{lstlisting}
+typesets: 
+\begin{boxed}
+$S := \{ x | ~x \equiv 1 \pmod {9} \}$. $T := \{x | ~x \equiv 1 \pmod {3}\}$. $S \subset T$.
+\end{boxed}
+Note the \verb!~! (tilde) to ensure a space between symbols in math mode.
+
+There are several symbols you'd want to typeset with \LaTeX~ (including this one! Try it, type \verb!\LaTeX!), and you'd find \href{https://oeis.org/wiki/List_of_LaTeX_mathematical_symbols}{this list} \cite{symbols} comprehensive. 
+
+Here's a short passage that covers some features the list does not include:
+
+\begin{boxed}
+A well known expression of $\binom{n}{k}$ is $\frac{n!}{k!(n-k)!}$. 
+$n!$ denotes the factorial function for non-negative integers, and is recursively defined as \\
+$0! := 1$, $n! := n \cdot (n-1)!$
+
+$n! = \prod_{j=1}^{n}j$. A common extension of the factorial function is the Gamma function. For positive integers $n$, 
+
+$(n-1)! = \Gamma(n) = \int_{0}^{\infty}x^{n-1}e^{-x}dx$ 
+
+It follows from the binomial theorem that $\sum_{k=0}^{n}\binom{n}{k} = 2^n$. The binomial theorem is incredibly powerful, and can be used to approximate $\sqrt{1+x}$, or even $\sqrt[71]{1+x}$.
+\end{boxed}
+
+\textbf{Solution}:
+
+\begin{lstlisting}
+A well known expression of $\binom{n}{k}$ is $\frac{n!}{k!(n-k)!}$. 
+$n!$ denotes the factorial function for non-negative integers, and is recursively defined as \\
+$0! := 1$, $n! := n \cdot (n-1)!$
+
+$n! = \prod_{j=1}^{n}j$. A common extension of the factorial function is the Gamma function. For positive integers $n$, 
+
+$(n-1)! = \Gamma(n) = \int_{0}^{\infty}x^{n-1}e^{-x}dx$ 
+
+It follows from the binomial theorem that $\sum_{k=0}^{n}\binom{n}{k} = 2^n$. The binomial theorem is incredibly powerful, and can be used to approximate $\sqrt{1+x}$, or even $\sqrt[71]{1+x}$.
+\end{lstlisting}
+
+Sometimes, you'd want regular text in math mode; say, while writing 
+\begin{boxed}
+$\text{P} \subseteq \text{NP}$. However, we know that testing the positivity of the term $\text{residue}(n)$ is decidable in $\text{coNP}^{\text{RP}}$.
+\end{boxed}
+
+\newpage
+
+Here's how we do it:
+\begin{lstlisting}
+$\text{P} \subseteq \text{NP}$. However, we know that testing the positivity of the term $\text{residue}(n)$ is decidable in $\text{coNP}^{\text{RP}}$.
+\end{lstlisting}
+
+\subsection{The Equation environment}
+Equations are often pivotal to the report, and you want them to stand out. Here's where you use the equation environment. Here's a sample for demonstrating the effect it creates.
+\begin{boxed}
+Charles' Law, Boyle's Law, Gay-Lussac's Law and Avogadro's law were empirical rules relating the pressure, volume, temperature and amount of gas. These theories culminated in the elegant Ideal Gas Equation.
+\begin{equation}
+pV = nRT
+\label{eq:idealgas}
+\end{equation}
+\end{boxed}
+How do you do it?
+\begin{lstlisting}
+\begin{equation}
+pV = nRT
+\label{eq:idealgas}
+\end{equation}
+\end{lstlisting}
+It's that simple. Notice the label; it helps if you want to refer to the equation in the later part of the document. 
+
+Sometimes, when you're sure you won't need to reference the equation, you might decide to do away with the number for that particular equation. Here are two ways of doing that:
+
+\newpage
+
+
+\newpage
+
+
+\begin{lstlisting}
+Vanderwaal proposed the real gas equation as a more accurate model.
+\begin{equation*}
+\left(p + \frac{an^2}{V^2}\right)(V - nb) = nRT
+\end{equation*}
+If you introduce a variable compressibility factor $Z$, this can be expressed as
+\begin{equation}
+pV = ZnRT \nonumber
+\end{equation}
+\end{lstlisting}
+
+This typesets to:
+\begin{boxed}
+Vanderwaal proposed the real gas equation as a more accurate model.
+\begin{equation*}
+\left(p + \frac{an^2}{V^2}\right)(V - nb) = nRT
+\end{equation*}
+If you introduce a variable compressibility factor $Z$, this can be expressed as
+\begin{equation}
+pV = ZnRT \nonumber
+\end{equation}
+\end{boxed}
+
+Often, it so happens that you want to write several equations one after the other. We strongly recommend the align environment, that is part of the amsmath package. \href{https://tex.stackexchange.com/questions/196/eqnarray-vs-align}{Do not use eqnarray, which is simply base \LaTeX.} \cite{eqnarray} 
+
+Use the ampersand (\verb!&!) right before the symbol you want to align. Use double backslash (\verb!\\!) to signify a new line. Here's an example:  
+
+\begin{lstlisting}
+\begin{align*}
+\boldsymbol{\nabla} \cdot \mathbf{E} &= \frac{\rho}{\varepsilon_0} \\
+\boldsymbol{\nabla} \cdot \mathbf{B} &= 0 \\
+\boldsymbol{\nabla} \times \mathbf{E} &= -\frac{\partial \mathbf{B}}{\partial t} \\
+\boldsymbol{\nabla} \times \mathbf{B} &= \mu_0\mathbf{j} + \frac{1}{c^2}\frac{\partial \mathbf{E}}{\partial t}
+\end{align*}
+\end{lstlisting}
+
+\fbox{
+\begin{minipage}[b]{0.9\linewidth}
+\begin{align*}
+\boldsymbol{\nabla} \cdot \mathbf{E} &= \frac{\rho}{\varepsilon_0} \\
+\boldsymbol{\nabla} \cdot \mathbf{B} &= 0 \\
+\boldsymbol{\nabla} \times \mathbf{E} &= -\frac{\partial \mathbf{B}}{\partial t} \\
+\boldsymbol{\nabla} \times \mathbf{B} &= \mu_0\mathbf{j} + \frac{1}{c^2}\frac{\partial \mathbf{E}}{\partial t}
+\end{align*}
+\end{minipage}
+}
+
+\subsection{Matrices}
+Typesetting matrices is straightforward; very similar to tables. Here's an example:
+\begin{lstlisting}
+The companion matrix $M$ is given as:
+$$\begin{bmatrix}
+	0 & 1 & 0 & \dots & 0 \\
+	0 & 0 & 1 & \dots & 0 \\
+	\vdots & \vdots & \vdots & \ddots & \vdots \\
+	0 & 0 & 0 & \dots & 1 \\
+	a_0 & a_1 & a_2 & \dots & a_{\kappa-1} 
+\end{bmatrix}$$
+$M$ is invertible if and only if $a_0 \neq 0$
+\end{lstlisting}
+
+\fbox{
+\begin{minipage}[b]{0.9\linewidth}
+The companion matrix $M$ is given as:
+$$\begin{bmatrix}
+	0 & 1 & 0 & \dots & 0 \\
+	0 & 0 & 1 & \dots & 0 \\
+	\vdots & \vdots & \vdots & \ddots & \vdots \\
+	0 & 0 & 0 & \dots & 1 \\
+	a_0 & a_1 & a_2 & \dots & a_{\kappa-1} 
+\end{bmatrix}$$
+$M$ is invertible if and only if $a_0 \neq 0$
+\end{minipage}
+}
+
+\href{https://www.overleaf.com/learn/latex/Matrices}{Explore} the different styles of matrices the amsmath package allows you to typeset! \cite{matrices}
+
+\subsection{Macros: Custom commands}
+Very often, you'll find yourself typing a cumbersome combination of commands, over and over again. You can create custom commands to save yourself the boredom. These are called macros. Macros can take multiple arguments.
+
+Suppose you are writing a report that is based on Linear Algebra, and uses the notion of inner product heavily. Obviously, an expression like $\innerproduct{u}{v}$ is going to show up left and right. This what you'd do, if you had to brute force every time:
+\begin{lstlisting}
+$\langle \boldsymbol{u}, \boldsymbol{v} \rangle$
+$\langle \boldsymbol{\theta}, \boldsymbol{\zeta} \rangle$
+\end{lstlisting}
+ad nauseum.
+
+What you could do instead, is observe that the inner product requires two arguments, and write a macro. The macro is to be defined in the preamble. (before you declare \verb!\begin{document}!)
+
+\begin{lstlisting}
+\newcommand{\innerproduct}[2]{\langle \boldsymbol{ #1 } , \boldsymbol{ #2 } \rangle}
+\end{lstlisting}
+
+\verb!\innerproduct! is how the custom command will be invoked. The [2] is the number of arguments it will take. Specifying this is optional. If this is not specified, the custom command doesn't take any arguments. \#1 and \#2 specify the first and second arguments that will be supplied to our custom command. So, to typeset $\innerproduct{u+w}{v}$, simply write
+
+\begin{lstlisting}
+$\innerproduct{u+w}{v}$
+\end{lstlisting}
+
+Suppose you're writing about a super efficient algorithm, and every second sentence contains the expression $\mathcal{O}(1)$. If you're particularly lazy, you could make a macro and save yourself the effort of typing out a few extra characters every time.
+\begin{lstlisting}
+\newcommand{\Oone}{\mathcal{O}(1)}
+\end{lstlisting}
+should do the job. Please note that macro names can only contain alphabetic characters. \cite{macros} Also, this is an example of a macro that doesn't take any arguments.
+
+If your custom command has the same name as one that is already provided in a package you've imported, it is a redefinition. The same syntax is followed, except \verb!\newcommand! is replaced by \verb!\renewcommand!
+
+\section{Theorems}
+Recall, in the preamble, we have imported the \verb!amsthm! package. The following lines in the preamble made it very convenient to define theorem like environments.
+\begin{lstlisting}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}{Proposition}[section]
+
+\theoremstyle{remark}
+\newtheorem*{remark}{Remark}
+\end{lstlisting}
+
+\begin{boxed}
+\begin{theorem}[Optional clarification]
+\label{mytheorem}
+This is our first theorem.
+\end{theorem}
+
+\begin{lemma}
+\label{mylemma}
+This is our first lemma. \LaTeX~ maintains a separate counter for theorems and lemmas.
+\end{lemma}
+
+\begin{corollary}
+\label{mycorollary}
+This is a corollary. Because we supplied "theorem" as an optional argument in square brackets when we defined the environment, Corollaries and Theorems share a common counter.
+\end{corollary}
+
+\begin{theorem}
+\label{mytheoremagain}
+Guess this proves our point about the counter.
+\end{theorem}
+
+\begin{lemma}
+\label{mylemmaagain}
+We hope you're convinced.
+\end{lemma}
+
+\begin{remark}
+Because of that asterisk, \LaTeX~ does not maintain a counter for remarks. Also, we changed the style from plain(default) to remark. 
+\end{remark}
+
+\begin{proof}
+Behold the power of the \verb!amsthm! package; it provides a proof environment as well. Socrates is a man. All men are mortal. Therefore, Socrates is mortal.
+\end{proof}
+
+\vspace{1em}
+
+\begin{proposition}
+\label{myfirstproposition}
+Because of the optional \verb!section! argument we supplied while defining the proposition environment, the counter resets every time there's a new section.
+\end{proposition}
+
+\end{boxed}
+
+Typesetting this is as easy as invoking environments.
+
+\begin{lstlisting}
+
+\begin{theorem}[Optional clarification]
+\label{mytheorem}
+This is our first theorem.
+\end{theorem}
+
+\begin{lemma}
+\label{mylemma}
+This is our first lemma. \LaTeX~ maintains a separate counter for theorems and lemmas.
+\end{lemma}
+
+\begin{corollary}
+\label{mycorollary}
+This is a corollary. Because we supplied "theorem" as an optional argument in square brackets when we defined the environment, Corollaries and Theorems share a common counter.
+\end{corollary}
+
+\begin{theorem}
+\label{mytheoremagain}
+Guess this proves our point about the counter.
+\end{theorem}
+
+\begin{lemma}
+\label{mylemmaagain}
+We hope you're convinced.
+\end{lemma}
+
+\begin{remark}
+Because of that asterisk, \LaTeX~ does not maintain a counter for remarks. Also, we changed the style from plain(default) to remark. 
+\end{remark}
+
+\begin{proof}
+Behold the power of the \verb!amsthm! package; it provides a proof environment as well. Socrates is a man. All men are mortal. Therefore, Socrates is mortal.
+\end{proof}
+
+\vspace{1em}
+
+\begin{proposition}
+\label{myfirstproposition}
+Because of the optional \verb!section! argument we supplied while defining the proposition environment, the counter resets every time there's a new section.
+\end{proposition}
+\end{lstlisting}
+
+\section{Custom environments}
+\begin{proposition}
+You can create environments like these, and make them more elaborate!
+\end{proposition}
+
+\begin{goodclaim}[green]{Bertrand Russell}
+If $2+2=5$, then I am the Pope. You can prove any statement under the sun if you start with a false premise.
+\end{goodclaim}
+
+\begin{goodclaim}[red]{Gambler's Fallacy}
+If a fair coin shows heads $20$ times in a row, it is more likely to show tails the next time.
+\end{goodclaim}
+
+\begin{goodclaim}[orange]{Twin Prime Conjecture}
+\label{milliondollars}
+There are infinitely many pairs of prime numbers that differ by exactly $2$.
+\end{goodclaim}
+
+\begin{goodclaim}{Default Colour}
+Observe the code. The colour that is passed to the environment is an optional argument. It's default value is \verb!black!. \textbf{Optional arguments come first. They must be specified in square brackets.}
+\end{goodclaim}
+
+This is how the environment was defined in the preamble:
+\begin{lstlisting}
+\usepackage{xcolor}
+\newcounter{claim}
+%if you want this counter to reset every section, 
+%append [section] as an optional argument:
+%\newcounter{claim}[section]
+
+%\newenvironment{<name of environment>}[<number of arguments>]
+%{<code at the beginning>}
+%{<ending code>}
+
+%Of course, you can define unordered environments!
+\newenvironment{goodclaim}[2][black]
+{
+    \color{#1!50!black}
+    \refstepcounter{claim}
+    %this increments the value of the counter by one
+    
+    \begin{center}
+        \textbf{\large{Claim \theclaim}} \\
+        %this prints the value of the counter
+        \textbf{#2}
+    \end{center}
+}
+{
+    \vspace{1.5em}
+}
+%For ordered environments like these, which are equipped with a counter, you can make labels and refer to them later, just like theorems.
+\end{lstlisting}
+
+Thus, a custom environment called \verb!goodclaim! is defined. It takes two arguments: first, an optional colour, in square brackets (if this is not specified, the default is black), and then, the compulsory title, in curly brackets. Here's an example.
+\begin{lstlisting}
+\begin{goodclaim}[orange]{Twin Prime Conjecture}
+\label{milliondollars}
+There are infinitely many pairs of prime numbers that differ by exactly $2$.
+\end{goodclaim}
+\end{lstlisting}
+
+If you'd like to redefine an existing environment, simply use \verb!\renewenvironment! instead of \verb!\newenvironment!.
+
+\section{Figures and Tables}
+Often, in a technical setting, you'll find the need to paste pictures, and to draw tables. \LaTeX{} has environments to do just that. 
+\subsection{Figures}
+For illustration purposes, we will use the very first image we showed you in the introductory tutorial.
+\begin{lstlisting}
+\begin{figure}[H] %[H] is from the floatrow package, it forces the picture to be typeset RIGHT HERE.
+    \centering 
+    %make sure your picture is in the same working directory/folder, or specify the graphics path
+    \includegraphics[width=0.6\linewidth]{ease-graph.png} %note the optional argument to adjust its size. Do it manually!
+    \caption{Simple.}
+    \label{fig:vanilla}
+\end{figure}
+\end{lstlisting}
+And voila!
+\begin{figure}[H] %[H] is from the floatrow package, it forces the picture to be typeset RIGHT HERE.
+    \centering
+    %make sure your picture is in the same working directory/folder to avoid complications of specifying the path
+    \includegraphics[width=0.6\linewidth]{ease-graph.png} %note the optional argument to adjust its size
+    \caption{Simple.}
+    \label{fig:vanilla}
+\end{figure}
+
+You could use floatrow to insert multiple pictures together:
+\begin{lstlisting}
+\begin{figure}[H]
+    \centering
+    \begin{floatrow}
+    %Figure boxes in a floatrow will be placed side by side.
+    %It's wise to keep a gap while specifying dimensions.
+        \ffigbox[0.4\textwidth]{\caption{A small graph.}}{\includegraphics[width=0.4\textwidth]{ease-graph.png}}
+        %Make sure the width of the picture doesn't exceed that of the box.
+        \ffigbox[0.4\textwidth]{\caption{The same graph.}}{\includegraphics[width=0.4\textwidth]{ease-graph.png}}
+    \end{floatrow}
+    \begin{floatrow}
+        \ffigbox[0.6\textwidth]{\caption{You need more pictures man.}}{\includegraphics[width=0.6\textwidth]{ease-graph.png}}
+    \end{floatrow}
+\end{figure}
+\end{lstlisting}
+
+See below. The subfigure method is an alternative to floatrow; it may work on your machine, but sometimes it throws an inexplicable error about the environment not being defined. 
+
+For further reading, we encourage you to go through \cite[Chapter 5]{figtable}
+
+\begin{figure}[H]
+    \centering
+    \begin{floatrow}
+    %Figure boxes in a floatrow will be placed side by side.
+    %It's wise to keep a gap while specifying dimensions.
+        \ffigbox[0.4\textwidth]{\caption{A small graph.}}{\includegraphics[width=0.4\textwidth]{ease-graph.png}}
+        %Make sure the width of the picture doesn't exceed that of the box.
+        \ffigbox[0.4\textwidth]{\caption{The same graph.}}{\includegraphics[width=0.4\textwidth]{ease-graph.png}}
+    \end{floatrow}
+    \begin{floatrow}
+        \ffigbox[0.6\textwidth]{\caption{You need more pictures man.}}{\includegraphics[width=0.6\textwidth]{ease-graph.png}}
+    \end{floatrow}
+\end{figure}
+
+\subsection{Tables}
+The \verb!table! environment encapsulates the \LaTeX{} table. It takes care of the placement of the table in the document, caption, etc. Nested in the \verb!table! environment is the \verb!tabular! environment. The latter is where we enter the contents of our table.
+
+Note that \verb!\\! starts a new row, and the ampersand \verb!&! acts as the column separator. 
+
+Here we build our first simple table.
+\begin{lstlisting}
+\begin{table}[H]
+    \centering
+    \begin{tabular}{l|c|r} %note the alignment
+        \hline
+         \textbf{Left} & \textbf{Centre} & \textbf{Right} \\
+         \hline 
+         Liberal & Moderate & Conservative \\
+         Blue & vs & Red \\
+         Biden & vs & Trump \\
+         \hline
+    \end{tabular}
+    \caption{A Simple Table. USA votes.}
+    \label{tab:my_label}
+\end{table}
+\end{lstlisting}
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{l|c|r} %note the alignment
+        \hline
+         \textbf{Left} & \textbf{Centre} & \textbf{Right} \\
+         \hline 
+         Liberal & Moderate & Conservative \\
+         Blue & vs & Red \\
+         Biden & vs & Trump \\
+         \hline
+    \end{tabular}
+    \caption{A Simple Table. USA votes.}
+    \label{tab:my_label}
+\end{table}
+
+Include the \verb!multirow! and \verb!multicol! packages in the preamble. \\
+With the \verb!\multirow{NUMBER_OF_ROWS}{WIDTH}{CONTENT}! command, we can have a cell span multiple rows. (Using * as the width lets \LaTeX{} automatically determine it):
+\begin{lstlisting}
+\begin{table}[H]
+    \centering
+    \begin{tabular}{l|c|r} %note the alignment
+        \hline
+         \textbf{Left} & \textbf{Centre} & \textbf{Right} \\
+         \hline 
+         Liberal & Moderate & Conservative \\
+         \hline
+         Blue & \multirow{3}{*}{vs} & Red \\ %both rows with vs are combined
+         Biden &  & Trump \\ %content of the second column omitted
+         Democrats &  & Republicans \\
+         \hline
+    \end{tabular}
+    \caption{Multirow Table. USA votes.}
+    \label{multirow}
+\end{table}
+\end{lstlisting}
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{l|c|r} %note the alignment
+        \hline
+         \textbf{Left} & \textbf{Centre} & \textbf{Right} \\
+         \hline 
+         Liberal & Moderate & Conservative \\
+         \hline
+         Blue & \multirow{3}{*}{vs} & Red \\ %both rows with vs are combined
+         Biden &  & Trump \\ %content of the second column omitted
+         Democrats &  & Republicans \\
+         \hline
+    \end{tabular}
+    \caption{Multirow Table. USA votes.}
+    \label{multirow}
+\end{table}
+
+With the \verb!\multicolumn{NO_of_columns}{alignment}{content}! command, we can have a cell span several columns.
+
+\begin{lstlisting}
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|c|c|c|c|}
+    \hline
+         \textbf{Day} & Session 1 & Session 2 & Session 3 \\
+         \hline
+         1 & \multicolumn{2}{c|}{Australia} & India \\
+         \hline
+         2 & \multicolumn{3}{c|}{Australia}\\
+         \hline
+         3 & \multicolumn{2}{c|}{India} & Australia \\
+         \hline
+         4 & \multicolumn{3}{c|}{India}\\
+         \hline
+         5 & \multicolumn{2}{c|}{Shared} & India \\
+         \hline
+    \end{tabular}
+    \caption{Who dominated which session: India vs Australia, Kolkata 2001}
+    \label{edengardens}
+\end{table}
+\end{lstlisting}
+
+
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|c|c|c|c|}
+    \hline
+         \textbf{Day} & Session 1 & Session 2 & Session 3 \\
+         \hline
+         1 & \multicolumn{2}{c|}{\textcolor[wave]{600}{Australia}} & \textcolor{blue}{India} \\
+         \hline
+         2 & \multicolumn{3}{c|}{\textcolor[wave]{600}{Australia}}\\
+         \hline
+         3 & \multicolumn{2}{c|}{\textcolor{blue}{India}} & \textcolor[wave]{600}{Australia} \\
+         \hline
+         4 & \multicolumn{3}{c|}{\textcolor{blue}{India}}\\
+         \hline
+         5 & \multicolumn{2}{c|}{Shared} & \textcolor{blue}{India} \\
+         \hline
+    \end{tabular}
+    \caption{Who dominated which session: India vs Australia, Kolkata 2001}
+    \label{edengardens}
+\end{table}
+
+We can also use \verb!multirow! and \verb!multicolumn! in tandem. Observe the code carefully to see how it's done.
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|c|c|c|c|}
+        \hline
+         \multicolumn{2}{|c|}{\multirow{2}{*}{$a^2$}} &  \multirow{2}{*}{$ab$} &  . \\ 
+         %first entry: 2*2 cell; second entry: 2*1 cell
+         \multicolumn{2}{|c|}{} &  & . \\ 
+         %the empty content is placeholder, content will come from the row above
+         \hline 
+         \multicolumn{2}{|c|}{$ab$} & $b^2$&.  \\
+         \hline
+         .  &. &. &. \\
+          \hline
+    \end{tabular}
+    \caption{Middle School Algebra}
+    \label{multirowcolumn}
+\end{table}
+
+\begin{lstlisting}
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|c|c|c|c|}
+        \hline
+         \multicolumn{2}{|c|}{\multirow{2}{*}{$a^2$}} &  \multirow{2}{*}{$ab$} &  . \\ 
+         %first entry: 2*2 cell; second entry: 2*1 cell
+         \multicolumn{2}{|c|}{} &  & . \\ 
+         %the empty content is placeholder, content will come from the row above
+         \hline 
+         \multicolumn{2}{|c|}{$ab$} & $b^2$&.  \\
+         \hline
+         .  &. &. &. \\
+          \hline
+    \end{tabular}
+    \caption{Middle School Algebra}
+    \label{multirowcolumn}
+\end{table}
+\end{lstlisting}
+
+We have introduced the basics. This tutorial \cite[Chapter 9]{figtable} is comprehensive. Read it to learn a few cool tricks you can do with \LaTeX{} tables!
+\subsection{Floats}
+Figures and Tables in \LaTeX{} are actually examples of Floats, containers for things in a document that cannot be broken over a page. \LaTeX{} does not put the floats into wherever you write them in your code, but it decides the best place to put it. Sometimes your image or table can even end up in a different page than the content where you wrote the code to insert the table.
+
+You can tell \LaTeX{} where you would prefer it to put your float, by passing in a location specifier inside []. For example, if you notice our Table/Figure codes, you'll see something like \verb!\begin{table}[H]!, here the H tells \LaTeX{} that you want to place the float precisely at the postion in your \LaTeX{} code. While this may always seem desirable, it does not always give desirable results. Here are the specifiers you can put in
+\begin{description}
+    \item[h] Place the float here, i.e., \textit{approximately} at the same point it occurs in the source text (however, not \textit{exactly} at the spot)
+    \item[t] Position at the \textit{top} of the page.
+    \item[b] Position at the \textit{bottom} of the page.
+    \item[p] Put on a special page for floats only.
+    \item[!] Override internal parameters LaTeX uses for determining "good" float positions. You would use it in conjunction with another specifier, like \verb|\begin{table}[h!]|. This is kind of like forcing \LaTeX{} to put it wherever you are telling it to
+    \item[H] As you know, places the float at precisely the location in the LaTeX code.
+\end{description}
+
+\section{Highlighting Code}
+Programming now permeates in almost every field of research, and hence, code is a necessity in most technical reports. To get started, we recommend the easily accessible \verb!listings! package. \verb!minted! does an even more elaborate job, however, it requires some effort to get it running.
+
+Set your preferences in the preamble like this:
+\begin{lstlisting}
+\lstset{
+    numbers=left,
+    %language = <set default language>,
+    breaklines=true, %automatic line breaks only at whitespace
+    keywordstyle=\color{blue}\bfseries, 
+    numberstyle=\tiny\color{gray},
+    commentstyle=\color{green!30!black},
+    stringstyle = \color{violet}
+}
+\end{lstlisting}
+
+And then when you want to adorn your document with code, use the \verb!lstlisting! environment as follows:
+\begin{TeXlstlisting}
+\begin{lstlisting}[language=<the programming language>]
+<your code goes here!>
+\end{lstlisting}
+\end{TeXlstlisting}
+
+And then, it's magic.
+
+\newpage
+
+\subsection{Example: C++ code snippet}
+\verb![language=C++]!
+\begin{lstlisting}[language=C++]
+#include <iostream>
+//preprocessor directive
+using namespace std;
+
+int main(int argc, char* argv[])
+{
+    string s = "Hello World";
+    cout<<s<<endl;
+}
+\end{lstlisting}
+
+\subsection{Example: Python code snippet}
+\verb![language=python]!
+\begin{lstlisting}[language=python]
+from numpy import *
+#insanely powerful library.
+
+print("First five odd numbers")
+for x in range(10):
+    if not x%2 == 0:
+        print(x)
+\end{lstlisting}
+
+\subsection{Example: Java code snippet}
+\verb![language=java]!
+\begin{lstlisting}[language=java]
+//yet another Hello World
+public class welcome
+{
+    public static void main(String[] args)
+    {
+        System.out.println("Welcome to the world of Java");
+    }
+}
+\end{lstlisting}
+
+
+\section{Cross References and Citations}
+You first need to import the package in the preamble: \verb!\usepackage{hyperref}!. Now, at various points in the document, we've made labels. More specifically, if you want to make a reference to an instance of an \textbf{ordered environment or section}, like how we remind you of equation \ref{eq:idealgas} or Theorem \ref{mytheorem}, simply type \verb!\ref{<label of the point>}!. For instance \verb!\ref{mycorollary}! makes a reference to Corollary \ref{mycorollary}. We can also refer to Claim \ref{milliondollars}, a custom claim.
+
+For reasons related to the nature of the typesetting algorithm, that are beyond the scope of this tutorial, you may need to compile your \TeX{} file twice for the cross references to work.
+
+You've probably noticed that there were a few hyperlinks in this document. It's pretty simple. \\ \verb!\href{https://www.youtube.com/watch?v=MKk1u5RMTn4}{An awesome song}! typesets: \href{https://www.youtube.com/watch?v=MKk1u5RMTn4}{An awesome song}. 
+It's neat. 
+
+Sometimes, you care to show the URL itself.\\ 
+In such cases, use \verb!\url{www.google.co.in}!. Makes sense in a context like, ``This search engine gives all the answers. Check it out: \url{www.google.co.in}". Make sure to \verb!\usepackage{url}! in the preamble.
+
+For formal citations, we use BibTeX. Here's a sample entry from the .bib file
+\begin{verbatim}
+@misc{greek,
+	title = {The Greek Alphabet},
+	url = {https://web.mit.edu/jmorzins/www/greek-alphabet.html},
+	publisher = {MIT},
+	author = {Jacob Morzinski}
+}
+\end{verbatim}
+
+\href{http://web.mit.edu/rsi/www/pdfs/bibtex-format.pdf}{Here} is a comprehensive guide to BibTeX citations. \cite{bibtex}. We strongly recommend you read it yourself, and refer to it whenever you write technical reports. 
+
+If our main source code is \verb!foo.tex!, the bib file must be named \verb!foo.bib!
+
+The word \verb!greek! is the key. In order to cite this source, we type in :\\
+\verb!\cite[<optional info>]{greek}! in our \TeX~ source code.
+
+In order to make the url show in the citations, we must load the following in our preamble:
+\begin{lstlisting}
+\usepackage{hyperref}
+\usepackage{url}
+\end{lstlisting}
+
+To make a References section that supports URLs, 
+\begin{lstlisting}
+\bibliographystyle{plainurl}
+\bibliography{foo} %do not write the .bib extension
+\end{lstlisting}
+
+In order for citations to work as intended, we need the following compilation order
+\begin{itemize}
+\item Compile the tex file
+\item Compile the bib file
+\item Compile the tex file
+\item Compile the tex file (yes, again!)
+\end{itemize}
+
+If you're using the VSCode plugin \LaTeX{} workshop, it does this automatically for you
+
+\begin{remark}
+When you write technical articles with the intention of publishing them in reputed journals or conferences, your citations are well recognised. It shouldn't be hard to look them up and find a BibTeX entry online.
+\end{remark}
+
+\section{Conclusion}
+With this, you're equipped with quite a few commands to typeset a mathematical report yourself. We've tried to make the examples as diverse as possible, drawing from our own experience with \LaTeX.~ Although this tutorial is far from exhaustive, we've tried our best to provide resources, tips and tricks that frequently prove themselves useful. Good luck! :)
+
+\newpage
+
+\bibliographystyle{plainurl}
+\bibliography{main}
+
+\end{document}

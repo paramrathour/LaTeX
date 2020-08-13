@@ -1,0 +1,153 @@
+\documentclass{knittingpattern}
+
+\usepackage[utf8]{inputenc}
+\usepackage{geometry}
+\geometry{
+	bottom=11mm,
+	left=12.5mm,
+	top=25mm,
+	right=12.5mm,
+}
+\usepackage{xcolor}
+\definecolor{colour0}{HTML}{000000}
+\definecolor{colour1}{HTML}{FBC707}
+\definecolor{colour2}{HTML}{B2B2FF}
+\definecolor{colour3}{HTML}{B2FFB2}
+\definecolor{colour4}{HTML}{E5CCE5}
+\usepackage{skak}
+\usepackage{chemfig,modiagram}
+%\usepackage{ochem, streetex}
+\usepackage{circuitikz}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{fancyhdr}
+\usepackage{longtable}
+\usepackage{calc}
+\usepackage{url}
+\usepackage{hyperref}
+
+\title{Field-specific \LaTeX tricks}
+\author{Param Rathour}
+\date{\today}
+\begin{document}
+\maketitle
+\tableofcontents
+\newpage
+\section{Knitting Patterns}
+This class provides a very convenient way to introduce boxed diagrams. We are thus going to use our stock image a few more times. Also, it has a few features to make knitting instructions more readable, however, we can adapt them to make prettier documents for our purposes as well.
+\diagram{wvl}
+\vspace{-1em}
+\important[0.7]{colour0}{colour1}{We have a way of highlighting important text, or as was originally intended, important instructions. Feel free to choose whatever background and border colour you like when you replicate these features, but try to replicate the dimensions as well as you can.}
+\vspace{-2em}
+\begin{pattern}[0.2]{colour2}{colour3}
+\textbf{Course} & \textbf{Credits}\\
+Introduction to Computer Programming & 6\\
+Abstractions and Paradigms in Programming & 6\\
+Abstractions and Paradigms in Programming Lab & 3\\
+Data Structure and Algorithms  & 6\\
+Software Systems Lab & 8	
+\end{pattern}
+\note[0.75]{colour0}{colour4}{Note!}{This is a note. The above feature was introduced to typeset a sequence of knitting instructions. The first column is for the instruction, the second for the number of stitches. But hey, it looks cool!}
+\biog[0.4]{wvl}{Look at the adjoining graph. Yes, you’ve seen it before. This time, it is side by side with a paragraph! And there’s a beautiful box around it! By default, this will be a quarter of the width of the page. If you follow the hint that is the title of this section, you won’t have to type in cumbersome code to fit in images. Also, have you noticed that the pages are much wider? A lot of it will be clear when you read up on the knittingpatterns class. It is already available with the MacTeX distributions, and of course, online on Overleaf. If your distribution does not offer it, download it \href{https://ctan.org/pkg/knittingpattern?lang=en}{from here} and copy the .cls file to the folder/directory your code is in. See the point where stuff becomes exponentially harder to do without \LaTeX? We daresay the rest of this assignment crosses that point. Good luck!}
+\section{Chess Notation}
+\newgame
+\fenboard{rnb1k1nr/p2p1ppp/3B4/1pbN1N1P/4P1P1/3P1Q2/PqP5/R4KR1 b - - 0 18}
+\begin{center}
+\textbf{Adolf Anderssen - Lionel Kieseritzky}\\London, 1851
+\end{center}
+\begin{center}
+\showboard
+\end{center}
+In this position, Black played \mainline{18...Bxg1}, taking the rook. Had he opted for \variation{18...Qxa1}, he would be better, but still in trouble. However, his choice allowed for a spectacular finish. \mainline{19.e5!} Blunting the Queen’s protection of g7. \mainline{19...Qxa1+} . What else? The rook is en-prise. \mainline{20.Ke2 Na6}. This covers the c7 square, as White was threatening Mate in 2, example like \variation{20...h6 21.Nxg7+ Kd8 22.Bc7#} . \mainline{21.Nxg7+ Kd8} \mainline{22.Qf6+!}
+\begin{center}
+\showboard
+\end{center}
+A brilliant Queen sacrifice to deflect the Knight on g8 that protects e7 \mainline{22...Nxf6 23.Be7#}
+\begin{center}
+\showboard
+\end{center}
+Chess enthusiasts will have immediately recognised this as The Immortal Game.
+Try typesetting this!
+\section{Chemistry}
+\subsection{Chemical Formulae}
+\begin{center}
+\chemfig{*6((-Cl)-=*6(-N=-=(-HN-[30/45](-)(-[-30/45]-[30/45]-[-30/45]-[30/45]N(-[2]-[30/45]-[-30/45]OH)(-[-30/45]-[30/45])))-)-=-=)}
+\end{center}
+This is the molecule hydroxychloroquine, that recently shot to fame as a proposed cure for COVID-19. Please draw it.
+\href{https://www.overleaf.com/learn/latex/chemistry_formulae}{This} is a helpful Overleaf tutorial to help you get started.
+\subsection{Molecular Orbital Diagrams}
+\begin{center}
+    \begin{modiagram}[labels,names]
+      \atom[N]{left}{ 2p = {0;up,up,up} }
+      \atom[O]{right}{ 2p = {2;pair,up,up} }
+      \molecule[NO]{
+        2pMO = {1.8,.4;pair,pair,pair,up},
+      }
+     \end{modiagram}
+\end{center}
+You’ve probably mugged this up for JEE, and definitely learnt more about this in CH 107.\\[5pt]
+Draw the above molecular orbital diagram for nitric oxide.
+Again, exact dimensions needn’t match.
+\newpage
+\section{Electrical Circuits}
+\begin{center}
+\begin{circuitikz}[american voltages]
+\draw 
+(0,0) to [short,o-,C,l=$C_1$] (2,0)
+to [R, l_=$R_1$] (2,3)
+to [short,-o] (9,3)
+to [open,v^>=$V_{CC}$] (9,-3);
+\draw 
+(0,-3) to [short,o-*] (2,-3)
+to [short,-*] (4,-3)
+to [short,-*] (6,-3)
+to [short] (8,-3)
+to [short,o-o] (9,-3);
+\draw 
+(6,-3) to[short] node[ground] {} (6,-3.5);
+\draw 
+(2,0) to [R, l_=$R_2$] [v^>=$V_B$] (2,-3);
+\draw
+(0,0) to [open,v^>=$V_0\sin(\omega t)$] (0,-3);
+\draw 
+(4,0) node[npn](npn) {}
+(npn.base) node[anchor=north,xshift=0.5em] {B}
+(npn.collector) node[anchor=north,xshift=-0.5em,yshift=0.3em] {C}
+(npn.emitter) node[anchor=south,xshift=-0.5em,yshift=-0.4em] {E};
+\draw 
+(2,0) to [short,i=$i_B$] (3.2,0);
+\draw
+(4,3) to [R,l_=$R_L$,i=$i_C$,*-*] (4,0.8)
+to [short,-o] (8,0.8)
+to [open,v^>=$V_{out}$] (8,-3);
+\draw 
+(4,-0.75) to [short,i=$i_E$] (4,-1.5)
+to [R,l_=$R_E$] [v^>=$V_E$] (4,-3);
+\draw 
+(4,-1.5) to [short] (6,-1.5)
+to [C,l_=$C_2$] (6,-3);
+\draw 
+(4.4,0.8) to [open,v^>=$V_{CE}$] (4.4,-0.8);
+\end{circuitikz}
+\end{center}
+%\begin{center}
+%\begin{circuitikz}[american voltages]
+%\draw
+%(0,0) to [short, *-] (6,0)
+%to [V, l_=$\mathrm{j}{\omega}_m \underline{\psi}^s_R$] (6,2) 
+%to [R, l_=$R_R$] (6,4) 
+%to [short, i_=$\underline{i}^s_R$] (5,4) 
+%(0,0) to [open, v^>=$\underline{u}^s_s$] (0,4) 
+%to [short, *- ,i=$\underline{i}^s_s$] (1,4) 
+%to [R, l=$R_s$] (3,4)
+%to [L, l=$L_{\sigma}$] (5,4) 
+%to [short, i_=$\underline{i}^s_M$] (5,3) 
+%to [L, l_=$L_M$] (5,0); 
+%\end{circuitikz}
+%\end{center}
+If you recall JEE Physics, this is a circuit diagram of an npn transistor used as an amplifier.
+Try your best to match this circuit.
+We have used the American voltages convention.
+It is alright if you can’t get the dimensions to match.
+What is important is that you know how to use circuitikz to draw circuits with the components used above, and mark voltages and currents.
+\end{document}
